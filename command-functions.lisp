@@ -74,6 +74,8 @@
 
 (defun finish-input (chord editor)
   (declare (ignore chord editor))
+  (setf (%buffer-next (editor-history editor)) nil
+        (%buffer-prev (editor-history editor)) (%buffer-list (editor-history editor)))
   (throw 'linedit-done t))
 
 ;;; CASE CHANGES
