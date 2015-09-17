@@ -28,13 +28,13 @@
 
 (defun set-column-address (n current)
   (if nil
-      (ti:tputs ti:column-address n)
+      (terminfo:tputs ti:column-address n)
       (cond ((< n current)
 	     (loop repeat (- current n) 
-		   do (ti:tputs ti:cursor-left)))
+		   do (terminfo:tputs ti:cursor-left)))
 	    ((> n current)
 	     (loop repeat (- n current) 
-		   do (ti:tputs ti:cursor-right))))))
+		   do (terminfo:tputs ti:cursor-right))))))
 
 (defun smart-terminal-p ()
   (and ti:cursor-up ti:cursor-down ti:clr-eos
@@ -44,7 +44,7 @@
 (defmethod backend-init ((backend smart-terminal))
   (call-next-method)
   (when ti:enter-am-mode
-    (ti:tputs ti:enter-am-mode)))
+    (terminfo:tputs ti:enter-am-mode)))
 
 (defun find-row (n columns)
   ;; 1+ includes point in row calculations
@@ -56,21 +56,21 @@
 (defun move-in-column (&key col vertical clear-to-eos current-col)
   (set-column-address col current-col)
   (if (plusp vertical)
-      (loop repeat vertical do (ti:tputs ti:cursor-up))
-      (loop repeat (abs vertical) do (ti:tputs ti:cursor-down)))
+      (loop repeat vertical do (terminfo:tputs ti:cursor-up))
+      (loop repeat (abs vertical) do (terminfo:tputs ti:cursor-down)))
   (when clear-to-eos
-    (ti:tputs ti:clr-eos)))
+    (terminfo:tputs ti:clr-eos)))
 
 (defun fix-wraparound (start end columns)
   ;; If final character ended in the last column the point
   ;; will wrap around to the first column on the same line:
   ;; hence move down if so.
   (when (and (< start end) (zerop (find-col end columns)))
-    (ti:tputs ti:cursor-down)))
+    (terminfo:tputs ti:cursor-down)))
 
 (defun place-point (&key up col)
-  (loop repeat up do (ti:tputs ti:cursor-up))
-  (ti:tputs ti:column-address col))
+  (loop repeat up do (terminfo:tputs ti:cursor-up))
+  (terminfo:tputs ti:column-address col))
 
 (defun paren-style ()
   (concat
